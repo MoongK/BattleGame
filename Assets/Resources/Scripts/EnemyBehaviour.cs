@@ -34,69 +34,81 @@ public class EnemyBehaviour : MonoBehaviour {
     {
         float distCheck = (player.transform.position - transform.position).magnitude;
 
-        if (anim.GetBool("isStarted"))
+        if (player.GetComponent<PlayerHp>().currentHp > 0)
         {
-            if (MobHp.currentHp != 0f)
+            if (anim.GetBool("isStarted"))
             {
-                // 공격 상태 or 따라오는 상태 판별
-                if (distCheck >= 3f && !BossAttacking())
+                if (MobHp.currentHp != 0f)
                 {
-                    print("(EnemyBehaviour2) : first case");
-                    ChasePlayer();
-                    ChaseRot();
-                    attackTrigger = false;
-                }
-                else if (distCheck >= 3f && BossAttacking())
-                {
-                    print("(EnemyBehaviour2) : second case");
-                    attackTrigger = false;
-                }
-                else
-                {
-                    print("(EnemyBehaviour2) : third case");
-                    attackTrigger = true;
-                }
-
-
-                if (attackTrigger)  // 공격 범위 안에 있음.
-                {
-                    myNav.SetDestination(transform.position);
-                    if (!attacking)
+                    // 공격 상태 or 따라오는 상태 판별
+                    if (distCheck >= 3f && !BossAttacking())
                     {
-                        print("(EnemyBehaviour2) : invokeChooseNum");
-                        Invoke("ChooseNum", 0f);
+                        print("(EnemyBehaviour2) : first case");
+                        ChasePlayer();
+                        ChaseRot();
+                        attackTrigger = false;
                     }
-                }
-                //else
-                //    attacking = false;
+                    else if (distCheck >= 3f && BossAttacking())
+                    {
+                        print("(EnemyBehaviour2) : second case");
+                        attackTrigger = false;
+                    }
+                    else
+                    {
+                        print("(EnemyBehaviour2) : third case");
+                        attackTrigger = true;
+                    }
 
 
-                anim.SetBool("AtkTrigger", attackTrigger);
-                anim.SetBool("Attacking", attacking);
+                    if (attackTrigger)  // 공격 범위 안에 있음.
+                    {
+                        myNav.SetDestination(transform.position);
+                        if (!attacking)
+                        {
+                            print("(EnemyBehaviour2) : invokeChooseNum");
+                            Invoke("ChooseNum", 0f);
+                        }
+                    }
+                    //else
+                    //    attacking = false;
 
-                // Walk or Run
-                if (MobHp.currentHp < MobHp.maxHp / 2f) // 체력 50% 이하 : 한번 Roar 후 달리기
-                {
-                    anim.speed = 1.3f;
-                    moveSpeed = fatalSpeed;
+
+                    anim.SetBool("AtkTrigger", attackTrigger);
+                    anim.SetBool("Attacking", attacking);
+
+                    // Walk or Run
+                    if (MobHp.currentHp < MobHp.maxHp / 2f) // 체력 50% 이하 : 한번 Roar 후 달리기
+                    {
+                        anim.speed = 1.3f;
+                        moveSpeed = fatalSpeed;
+                    }
+                    else
+                    {
+                        anim.speed = 1f;
+                        moveSpeed = originSpeed;
+                    }
+
+                    myNav.speed = moveSpeed;
                 }
                 else
                 {
                     anim.speed = 1f;
-                    moveSpeed = originSpeed;
+                    myNav.speed = 0;
+                    Invoke("Death", 5f);
                 }
-
-                myNav.speed = moveSpeed;
             }
             else
-            {
-                anim.speed = 1f;
-                myNav.speed = 0;
-                Invoke("Death", 5f);
-            }
+                transform.rotation = Quaternion.Euler(Vector3.zero);
+        }else
+        {
+            Reset();
         }
-        else
-            transform.rotation = Quaternion.Euler(Vector3.zero);
+    }
+
+    private void Reset()
+    {
+        anim.SetBool("AtkTrigger", false);
+        anim.SetFloat("Moving", 0f);
     }
 
     private void FixedUpdate()
@@ -177,7 +189,7 @@ public class EnemyBehaviour : MonoBehaviour {
         Vector3 eulerChecker = transform.InverseTransformPoint(player.transform.position);  // google solution
 
         if ((0f < eulerChecker.z && eulerChecker.z < 2f) && (Mathf.Abs(eulerChecker.x) <= eulerChecker.z))
-            player.GetComponent<PlayerHp>().TakeDamage(10);
+            player.GetComponent<PlayerHp>().TakeDamage(10, gameObject);
     }
 
     public void NormalAtk()
@@ -185,14 +197,14 @@ public class EnemyBehaviour : MonoBehaviour {
         Vector3 eulerChecker = transform.InverseTransformPoint(player.transform.position);
 
         if ((0f < eulerChecker.z && eulerChecker.z < 4f) && (Mathf.Abs(eulerChecker.x) <= eulerChecker.z))
-            player.GetComponent<PlayerHp>().TakeDamage(25);
+            player.GetComponent<PlayerHp>().TakeDamage(25, gameObject);
     }
 
     public  void SpecialAtk()
     {
         if (Vector3.Distance(transform.position, player.transform.position) <= 8f && !player.GetComponent<PlayerMove>().isJump)
         {
-            player.GetComponent<PlayerHp>().TakeDamage(40);
+            player.GetComponent<PlayerHp>().TakeDamage(40, gameObject);
             player.GetComponent<Rigidbody>().AddForce((player.transform.position - transform.position).normalized * 500f + player.transform.up * 300f);
         }
         else

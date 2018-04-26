@@ -6,7 +6,10 @@ public class StartTrigger : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.CompareTag("Player"))
-            GameObject.Find("Boss").GetComponent<Animator>().SetBool("isStarted", true);
+        if (GameObject.Find("Boss") != null)
+        {
+            if (other.transform.CompareTag("Player"))
+                GameObject.Find("Boss").GetComponent<Animator>().SetBool("isStarted", true);
+        }
     }
 }

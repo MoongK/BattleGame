@@ -7,7 +7,7 @@ public class ShootingState : MonoBehaviour {
 
     bool isShooted; // for AddForce
     Vector3 forwardDir;
-    GameObject playerBody;
+    GameObject player;
 
     public static float ArrowPower;
     public static float minPower, maxPower;
@@ -19,7 +19,7 @@ public class ShootingState : MonoBehaviour {
 
     void Awake () {
 
-        playerBody = GameObject.Find("Body(Player)");
+        player = GameObject.Find("Player");
         isShooted = false;
 
         ArrowPower = 0f;
@@ -83,7 +83,7 @@ public class ShootingState : MonoBehaviour {
             if(!PlayerDir.forwardToShot)
                 GetComponent<Rigidbody>().AddForce((forwardDir-transform.position).normalized * ArrowPower);
             else
-                GetComponent<Rigidbody>().AddForce((playerBody.transform.forward * ArrowPower) + (Vector3.up * 30f));
+                GetComponent<Rigidbody>().AddForce((player.transform.forward * ArrowPower) + (Vector3.up * 20f));
 
 
             isShooted = true;

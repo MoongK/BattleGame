@@ -24,26 +24,27 @@ public class ChangeMode : MonoBehaviour {
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         int EnemyCheck = 1 << LayerMask.NameToLayer("Enemy");
-
-        if (Physics.Raycast(ray, out hit, focusDist, EnemyCheck))
+        if (GetComponent<PlayerHp>().currentHp > 0)
         {
-            Target = hit.collider.transform.root.gameObject;
-            //TargetingPos = Target.transform.GetChild(0).GetChild(0).Find("Spine").Find("Spine1").gameObject;
-            TargetingPos = Target.transform.GetChild(0).Find("Spine").Find("Spine1").gameObject;
-            focusingPos = Target.transform.position; // targeting position
-            print("(ChangeMode) : Target name : " + Target.name);
-        }
-        else
-        {
-            Target = null; TargetingPos = null;
-        }
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (Target != null)
-                focusing = !focusing;
+            if (Physics.Raycast(ray, out hit, focusDist, EnemyCheck))
+            {
+                Target = hit.collider.transform.root.gameObject;
+                TargetingPos = Target.transform.GetChild(0).Find("Spine").Find("Spine1").gameObject;
+                focusingPos = Target.transform.position; // targeting position
+                print("(ChangeMode) : Target name : " + Target.name);
+            }
             else
-                return;
+            {
+                Target = null; TargetingPos = null;
+            }
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                if (Target != null)
+                    focusing = !focusing;
+                else
+                    return;
+            }
         }
 
         if (focusing)
@@ -59,7 +60,6 @@ public class ChangeMode : MonoBehaviour {
     {
         myAnim.runtimeAnimatorController = Resources.Load("Anim/FocusAnim") as RuntimeAnimatorController;
         GetComponent<FocusMode>().enabled = true;
-
         GetComponent<PlayerMove>().enabled = false;
         GetComponent<PlayerRotate>().enabled = false;
         transform.GetChild(0).GetComponent<CharacterRot>().enabled = false;

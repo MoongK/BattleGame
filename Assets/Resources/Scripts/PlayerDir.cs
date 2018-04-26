@@ -6,7 +6,9 @@ public class PlayerDir : MonoBehaviour {
 
     float rotSpeed;
     public static bool forwardToShot;
-    GameObject player;
+    GameObject player, playerCharacter;
+
+    public static float h, v;
 
     void Awake()
     {
@@ -16,19 +18,21 @@ public class PlayerDir : MonoBehaviour {
 
     void Update()
     {
-        if (!Input.GetKey(KeyCode.LeftAlt))
+        if (player.GetComponent<PlayerHp>().currentHp > 0)
         {
-            forwardToShot = false;
-            transform.rotation = player.transform.rotation;
+            h = Input.GetAxisRaw("Horizontal");
+            v = Input.GetAxisRaw("Vertical");
+
+            if (!Input.GetKey(KeyCode.LeftAlt))
+                forwardToShot = false;
+            else
+                forwardToShot = true;
+
         }
-        else
-        {
-            forwardToShot = true;
             float AxisX = Input.GetAxisRaw("Mouse X") * Time.deltaTime;
             transform.Rotate(0f, AxisX * rotSpeed, 0f);
-        }
-
-        transform.position = player.transform.position;
+            transform.position = player.transform.position;
+        
 
         Debug.DrawRay(transform.position + Vector3.up, transform.forward, Color.red);
     }

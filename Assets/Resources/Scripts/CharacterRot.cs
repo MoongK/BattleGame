@@ -15,12 +15,11 @@ public class CharacterRot : MonoBehaviour {
 
     void LateUpdate () {
 
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        float h = PlayerDir.h;
+        float v = PlayerDir.v;
 
         _RotSpeed = transform.parent.GetComponent<PlayerMove>().RotSpeed;
         _MovingDir = transform.parent.GetComponent<PlayerMove>().MovingDir;
-
 
         if (h != 0f || v != 0f)
         {

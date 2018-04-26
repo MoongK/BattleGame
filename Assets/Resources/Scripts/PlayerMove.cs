@@ -33,58 +33,62 @@ public class PlayerMove : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        
-        MovingDir = new Vector3(h, 0f, v).normalized;
 
-        if (anim.GetCurrentAnimatorStateInfo(1).IsName("BowAttack") || anim.GetCurrentAnimatorStateInfo(1).IsName("BowPull"))
-            MoveSpeed = originSpeed;
-        else
+        if (GetComponent<PlayerHp>().currentHp > 0)
         {
-            if (Input.GetKey(KeyCode.LeftShift) && (h != 0f || v != 0f))  // running~
-                MoveSpeed = Mathf.Clamp(2f * MoveSpeed, 0f, maxSpeed);
-            else
+            float h = PlayerDir.h;
+            float v = PlayerDir.v;
+
+            MovingDir = new Vector3(h, 0f, v).normalized;
+
+            if (anim.GetCurrentAnimatorStateInfo(1).IsName("BowAttack") || anim.GetCurrentAnimatorStateInfo(1).IsName("BowPull"))
                 MoveSpeed = originSpeed;
-        }
-        
-
-        if (MoveSpeed > originSpeed)
-            isRun = true;
-        else
-            isRun = false;                                          // ~running
-
-        if(h != 0f || v != 0f)
-            anim.SetBool("Walking", true);
-        else
-            anim.SetBool("Walking", false);
-
-        MovingDir = transform.TransformDirection(MovingDir);
-
-        if (isGround)
-        {
-            if (Input.GetButtonDown("Jump"))
+            else
             {
-                myrg.AddForce(Vector3.up * 150f);
+                if (Input.GetKey(KeyCode.LeftShift) && (h != 0f || v != 0f))  // running~
+                    MoveSpeed = Mathf.Clamp(2f * MoveSpeed, 0f, maxSpeed);
+                else
+                    MoveSpeed = originSpeed;
+            }
+
+
+            if (MoveSpeed > originSpeed)
+                isRun = true;
+            else
+                isRun = false;                                          // ~running
+
+            if (h != 0f || v != 0f)
+                anim.SetBool("Walking", true);
+            else
+                anim.SetBool("Walking", false);
+
+            MovingDir = transform.TransformDirection(MovingDir);
+
+            if (isGround)
+            {
+                if (Input.GetButtonDown("Jump"))
                 {
-                    isJump = true;
-                    isGround = false;
+                    myrg.AddForce(Vector3.up * 150f);
+                    {
+                        isJump = true;
+                        isGround = false;
+                    }
                 }
             }
+
+            anim.SetBool("isRun", isRun);
+            anim.SetBool("isJump", isJump);
+
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("StandJump"))
+                return;
+
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("LightJump"))
+            {
+                MoveSpeed /= 2f;
+            }
+
+            myrg.position += MovingDir * MoveSpeed * Time.deltaTime;
         }
-
-        anim.SetBool("isRun", isRun);
-        anim.SetBool("isJump", isJump);
-
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("StandJump"))
-            return;
-
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("LightJump"))
-        {
-            MoveSpeed /= 2f;
-        }
-  
-        myrg.position += MovingDir * MoveSpeed * Time.deltaTime;
     }
 
 }

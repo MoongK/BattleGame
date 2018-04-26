@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerHp : MonoBehaviour {
 
     public int maxHp, currentHp;
-
+    public Quaternion DamagedRot;
+    Animator anim;
 
     private void Awake()
     {
@@ -13,30 +14,30 @@ public class PlayerHp : MonoBehaviour {
         currentHp = maxHp;
     }
 
-    private void Update()
+    public void TakeDamage(int damage, GameObject _enemy)
     {
-        if(currentHp <= 0)
-        {
-            currentHp = 0;
-        }
-        print("currentHp : " + currentHp);
+        GetComponent<ChangeMode>().focusing = false;
+        Damaged(damage, _enemy);
     }
 
-
-    public void TakeDamage(int damage)
+    void Damaged(int damage, GameObject _enemy)
     {
         Animator anim = transform.Find("Body(Player)").GetComponent<Animator>();
         anim.SetInteger("Damage", damage);
+
         anim.SetTrigger("TakeDamage");
 
         currentHp -= damage;
+        currentHp = Mathf.Clamp(currentHp, 0, maxHp);
 
-        if(damage >= 40)
+        anim.SetInteger("PlayerHp", currentHp);
+
+        if (damage >= 40)
         {
             print("so pain atk");
-            
+
         }
-        else if(damage >= 25)
+        else if (damage >= 25)
         {
             print("pretty pain atk");
         }
@@ -46,6 +47,14 @@ public class PlayerHp : MonoBehaviour {
         }
 
         GameObject.Find("UserHp").GetComponent<HeartMgr>().Damaged(damage);
+        RotOnDamaged(_enemy);
+        print("currentHp : " + currentHp);
+    }
+
+    public void RotOnDamaged(GameObject enemy)
+    {
+        transform.Find("Body(Player)").LookAt(enemy.transform.position);
+        DamagedRot = transform.Find("Body(Player)").rotation;
     }
 
 }
