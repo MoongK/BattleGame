@@ -8,12 +8,15 @@ public class SetQuiver : MonoBehaviour {
     GameObject Belt, Grab;
     Object Arrows;
 
-
-	void Start () {
+    private void Awake()
+    {
         maxQuiverArrows = 50;
         Arrows = Resources.Load("Prefabs/Arrow");
         Belt = GameObject.Find("BowBelt");
         Grab = GameObject.Find("ArrowGrab");
+    }
+
+    void Start () {
 
         for (int i = 0; i < maxQuiverArrows; i++)
         {

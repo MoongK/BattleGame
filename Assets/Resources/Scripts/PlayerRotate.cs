@@ -5,10 +5,12 @@ using UnityEngine;
 public class PlayerRotate : MonoBehaviour {
 
     public float rotSpeed;
+    Animator anim;
 
     void Awake()
     {
         rotSpeed = 150f;
+        anim = GameObject.Find("Body(Player)").GetComponent<Animator>();
     }
 
     void Update()
@@ -20,7 +22,7 @@ public class PlayerRotate : MonoBehaviour {
         if(GetComponent<PlayerHp>().currentHp > 0) {
             if (!Input.GetKey(KeyCode.LeftAlt))
             {
-                if (h != 0f || v != 0f)
+                if ((h != 0f || v != 0f) || (anim.GetCurrentAnimatorStateInfo(1).IsTag("AttackMachine")))
                 {
                     transform.rotation = GameObject.Find("PlayerDir").transform.rotation;
                 }

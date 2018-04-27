@@ -16,7 +16,13 @@ public class PlayerHp : MonoBehaviour {
 
     public void TakeDamage(int damage, GameObject _enemy)
     {
-        GetComponent<ChangeMode>().focusing = false;
+        GetComponent<ChangeMode>().focusing = false;    // change to normalMode
+        StartCoroutine(test(damage, _enemy));   // why doesn't work at same time?
+    }
+
+    IEnumerator test(int damage, GameObject _enemy)
+    {
+        yield return null;
         Damaged(damage, _enemy);
     }
 
@@ -32,23 +38,8 @@ public class PlayerHp : MonoBehaviour {
 
         anim.SetInteger("PlayerHp", currentHp);
 
-        if (damage >= 40)
-        {
-            print("so pain atk");
-
-        }
-        else if (damage >= 25)
-        {
-            print("pretty pain atk");
-        }
-        else
-        {
-            print("week atk");
-        }
-
         GameObject.Find("UserHp").GetComponent<HeartMgr>().Damaged(damage);
         RotOnDamaged(_enemy);
-        print("currentHp : " + currentHp);
     }
 
     public void RotOnDamaged(GameObject enemy)

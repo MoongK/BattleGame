@@ -43,19 +43,16 @@ public class EnemyBehaviour : MonoBehaviour {
                     // 공격 상태 or 따라오는 상태 판별
                     if (distCheck >= 3f && !BossAttacking())
                     {
-                        print("(EnemyBehaviour2) : first case");
                         ChasePlayer();
                         ChaseRot();
                         attackTrigger = false;
                     }
                     else if (distCheck >= 3f && BossAttacking())
                     {
-                        print("(EnemyBehaviour2) : second case");
                         attackTrigger = false;
                     }
                     else
                     {
-                        print("(EnemyBehaviour2) : third case");
                         attackTrigger = true;
                     }
 
@@ -144,11 +141,7 @@ public class EnemyBehaviour : MonoBehaviour {
     {
         if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Roar") && !anim.GetCurrentAnimatorStateInfo(0).IsName("BeforeStartIdle") && !anim.GetCurrentAnimatorStateInfo(0).IsName("StartRoar"))
         {
-            print("(EnemyBehaviour2) : Roar!!!");
-
-            //transform.position += transform.forward * moveSpeed * Time.deltaTime;
             myNav.SetDestination(player.transform.position);
-
             anim.SetFloat("Moving", moveSpeed);
         }
     }
@@ -166,14 +159,12 @@ public class EnemyBehaviour : MonoBehaviour {
            anim.GetCurrentAnimatorStateInfo(0).IsName("SpecialAtk"))
         {
             transform.rotation = transform.rotation;
-            print("(EnemyBehaviour2) : BossAttacking");
             attacking = true;
             return true;
         }
         else
         {
             attacking = false;
-            print("(EnemyBehaviour2) : BossNotAttacking");
             return false;
         }
     }

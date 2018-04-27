@@ -23,10 +23,13 @@ public class PlayerDir : MonoBehaviour {
             h = Input.GetAxisRaw("Horizontal");
             v = Input.GetAxisRaw("Vertical");
 
-            if (!Input.GetKey(KeyCode.LeftAlt))
-                forwardToShot = false;
-            else
-                forwardToShot = true;
+            if (!player.GetComponent<ChangeMode>().focusing)
+            {
+                if (!Input.GetKey(KeyCode.LeftAlt))
+                    forwardToShot = false;
+                else
+                    forwardToShot = true;
+            }
 
         }
             float AxisX = Input.GetAxisRaw("Mouse X") * Time.deltaTime;

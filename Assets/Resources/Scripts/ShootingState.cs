@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ShootingState : MonoBehaviour {
 
+    public Object Ef;
+
     bool isShooted; // for AddForce
     Vector3 forwardDir;
     GameObject player;
+    Rigidbody myrig;
 
     public static float ArrowPower;
     public static float minPower, maxPower;
@@ -16,10 +18,13 @@ public class ShootingState : MonoBehaviour {
     float arrowDamage, minDam, maxDam, criDam;
     bool Attacked;
     Vector3 afterCrashedPos;
+    bool focuseMode;
 
     void Awake () {
 
         player = GameObject.Find("Player");
+        myrig = GetComponent<Rigidbody>();
+
         isShooted = false;
 
         ArrowPower = 0f;
@@ -35,7 +40,6 @@ public class ShootingState : MonoBehaviour {
 
         Attacked = false;
         afterCrashedPos = Vector3.zero;
-
     }
 	
 	void Update () {
@@ -44,10 +48,11 @@ public class ShootingState : MonoBehaviour {
         ArrowPower = Mathf.Clamp(ArrowPower, 0f, maxPower);
 
         arrowDamage = Mathf.Clamp(arrowDamage, 0, maxDam);
-        print("(ShootingState) - Damage : " + arrowDamage);
 
         if (transform.parent != null && isShooted)
             transform.localPosition = afterCrashedPos;
+
+        focuseMode = player.GetComponent<ChangeMode>().focusing;
     }
 
     private void FixedUpdate()
@@ -57,6 +62,7 @@ public class ShootingState : MonoBehaviour {
 
     public void Shooting()
     {
+
         print("(ShootingState) : Shooting()");
 
         if (transform.parent.name == "ArrowGrab")
@@ -67,8 +73,8 @@ public class ShootingState : MonoBehaviour {
         if (transform.parent.CompareTag("Shooter"))
             transform.SetParent(null);
 
-        GetComponent<Rigidbody>().isKinematic = false;
-        GetComponent<Rigidbody>().useGravity = true;
+        myrig.isKinematic = false;
+        myrig.useGravity = true;
         GetComponent<CapsuleCollider>().enabled = true;
 
         if (!isShooted)
@@ -80,10 +86,23 @@ public class ShootingState : MonoBehaviour {
             if (arrowDamage == 0)
                 arrowDamage = minDam;
 
-            if(!PlayerDir.forwardToShot)
-                GetComponent<Rigidbody>().AddForce((forwardDir-transform.position).normalized * ArrowPower);
+            if (!PlayerDir.forwardToShot)
+            {
+                if(!focuseMode)
+                    myrig.AddForce((forwardDir - transform.position).normalized * ArrowPower);  // have velocity
+                else
+                {
+                    myrig.isKinematic = true;
+                    Transform target = player.GetComponent<ChangeMode>().TargetingPos.transform;
+                    var ef = Instantiate(Ef, target.position, Quaternion.identity, target.transform) as GameObject;
+                    ef.transform.SetParent(null);
+
+                    transform.rotation = player.transform.rotation;
+                    myrig.position = player.GetComponent<ChangeMode>().TargetingPos.transform.position;     // hit scan
+                }
+            }
             else
-                GetComponent<Rigidbody>().AddForce((player.transform.forward * ArrowPower) + (Vector3.up * 20f));
+                myrig.AddForce((player.transform.forward * ArrowPower) + (Vector3.up * 20f));
 
 
             isShooted = true;
@@ -101,8 +120,8 @@ public class ShootingState : MonoBehaviour {
 
         ArrowPower += 5f;
         arrowDamage += (maxDam - arrowDamage) * (ArrowPower / maxPower);
-        GetComponent<Rigidbody>().isKinematic = true;
-        GetComponent<Rigidbody>().useGravity = false;
+        myrig.isKinematic = true;
+        myrig.useGravity = false;
         GetComponent<CapsuleCollider>().enabled = false;
 
     }
@@ -116,8 +135,8 @@ public class ShootingState : MonoBehaviour {
 
         ArrowPower = minPower;
         arrowDamage = minDam;
-        GetComponent<Rigidbody>().isKinematic = true;
-        GetComponent<Rigidbody>().useGravity = false;
+        myrig.isKinematic = true;
+        myrig.useGravity = false;
         GetComponent<CapsuleCollider>().enabled = false;
 
     }
@@ -127,8 +146,8 @@ public class ShootingState : MonoBehaviour {
         print("(ShootingState) : EnterOnObject()");
         transform.SetParent(_ob.transform, true);
 
-        GetComponent<Rigidbody>().isKinematic = true;
-        GetComponent<Rigidbody>().useGravity = false;
+        myrig.isKinematic = true;
+        myrig.useGravity = false;
         GetComponent<CapsuleCollider>().isTrigger = true;
 
     }
@@ -178,13 +197,11 @@ public class ShootingState : MonoBehaviour {
 
     void ArrowDirection()
     {
-        Rigidbody rg = GetComponent<Rigidbody>();
-
         if (transform.parent == null)
         {
-            Debug.DrawRay(transform.position, (rg.velocity - transform.position), Color.yellow);
+            Debug.DrawRay(transform.position, (myrig.velocity - transform.position), Color.yellow);
 
-            transform.forward = Vector3.Lerp(transform.forward, rg.velocity.normalized, 1f);  // google solution
+            transform.forward = Vector3.Lerp(transform.forward, myrig.velocity.normalized, 1f);  // google solution
         }
         else
             transform.rotation = transform.rotation;

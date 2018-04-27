@@ -67,7 +67,6 @@ public class HeartMgr : MonoBehaviour {
         }
         currentHp = currentHp - _damage;
         currentHp = Mathf.Clamp(currentHp, 0f, totalHp);
-        print("currentHp : " + currentHp);
     }
 
     public void Healing(int _heal)

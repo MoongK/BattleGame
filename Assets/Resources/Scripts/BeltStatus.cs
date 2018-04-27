@@ -131,7 +131,6 @@ public class BeltStatus : MonoBehaviour {
         {
             Quiver.GetComponent<SetQuiver>().TakedByGrab();
         }
-        print("(BeltStatus) - takedByGrab : " + Grab.transform.childCount);
 
         yield return new WaitForSeconds(1.3f);
 
