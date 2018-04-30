@@ -62,8 +62,8 @@ public class ShootingState : MonoBehaviour {
 
     public void Shooting()
     {
-
-        print("(ShootingState) : Shooting()");
+        if (transform.parent == null)
+            return;
 
         if (transform.parent.name == "ArrowGrab")
         {
@@ -143,7 +143,6 @@ public class ShootingState : MonoBehaviour {
 
     void EnterOnObject(GameObject _ob)
     {
-        print("(ShootingState) : EnterOnObject()");
         transform.SetParent(_ob.transform, true);
 
         myrig.isKinematic = true;
@@ -156,7 +155,6 @@ public class ShootingState : MonoBehaviour {
     {
         if (!collision.collider.gameObject.CompareTag("Player"))
         {
-            print("(ShootingState) : oh, it's " + collision.gameObject.name);
             EnterOnObject(collision.collider.gameObject);
 
             if (collision.collider.gameObject.layer == Enemylayer)
@@ -169,15 +167,16 @@ public class ShootingState : MonoBehaviour {
                         arrowDamage *= criDam;
                         StartCoroutine(CriticalPop());
                     }
-                    collision.transform.root.GetComponent<EnemyHp>().TakeDamage(arrowDamage);
+                    if (player.GetComponent<ChangeMode>().focusing)
+                        collision.transform.root.GetComponent<EnemyHp>().TakeDamage(arrowDamage * 2f);
+                    else
+                        collision.transform.root.GetComponent<EnemyHp>().TakeDamage(arrowDamage);
+
                     StartCoroutine(DamPop());
                 }
-                
             }
             afterCrashedPos = transform.localPosition;
-        }
-        print("(Arrow) : " + collision.gameObject.name);
-        
+        }        
     }
 
     IEnumerator CriticalPop()

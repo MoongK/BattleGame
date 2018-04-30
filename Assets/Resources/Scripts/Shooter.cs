@@ -36,31 +36,26 @@ public class Shooter : MonoBehaviour {
                 print("(Shooter) : NoneState call");
                 Invoke("NoneState", 0f);
             }
-            else
+            if (Input.GetMouseButton(1))
             {
-                if (anim.GetCurrentAnimatorStateInfo(1).IsName("BowPull"))
-                {
-                    print("(Shooter) : ReadyState call");
-                    Invoke("ReadyToShoot", 0f);
-                }
-                if (anim.GetCurrentAnimatorStateInfo(1).IsName("BowAttack"))
-                {
-                    print("(Shooter) : ShootingState call");
-                    Invoke("ShootArrow", 0f);
-                }
+                print("(Shooter) : ReadyState call");
+                Invoke("ReadyToShoot", 0f);
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                print("(Shooter) : ShootingState call");
+                Invoke("ShootArrow", 0f);
             }
         }
         else
-            print("(Shooter) : Null Arrow");
+            return;
     }
 
     void ShootArrow()
     {
         if (!AlreadyShoot)
         {
-            print("(Shooter) : ShootArrowFunc - done");
             AlreadyShoot = true;
-
             Arrow.transform.SetParent(transform);
             Arrow.transform.localPosition = ArrowPosRot.ReadyPos;
             Arrow.transform.localRotation = ArrowPosRot.ReadyRot;       // temp,,,
@@ -68,18 +63,25 @@ public class Shooter : MonoBehaviour {
             Invoke("ServeShoot", 0.2f);
         }
         else
-            print("(Shooter) : ShootArrowFunc - doesn't done");
+        {
+            print("false, but I'll try again"); // 일단 해결은 했는데, 근본적인 이유 찾기.
+            AlreadyShoot = false;
+            ShootArrow();
+        }
     }
 
     void ServeShoot()
     {
+        if (Arrow == null)
+            return;
+
         Arrow.GetComponent<ShootingState>().Shooting();
         print("(Shooter) : ServeShootFunc - done");
     }
 
     void ReadyToShoot()
     {
-        print("(Shooter) : ReadyToShootFunc done");
+        //print("(Shooter) : ReadyToShootFunc done");
 
         if (Arrow.transform.parent == Grab.transform)
         {
@@ -93,7 +95,7 @@ public class Shooter : MonoBehaviour {
     
     void NoneState()
     {
-        print("(Shooter) : NoneStateFunc done");
+        //print("(Shooter) : NoneStateFunc done");
         Arrow.GetComponent<ShootingState>().NoneShooting();
     }
 }

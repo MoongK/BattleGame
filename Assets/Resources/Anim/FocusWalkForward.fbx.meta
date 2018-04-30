@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 1a74b6ff10b7f7b48bd419c58d7eb67c
-timeCreated: 1522637921
+guid: 96a8b76dbb16e7243b885583a70db493
+timeCreated: 1522637922
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -141,7 +141,7 @@ ModelImporter:
     400130: Spine1
     400132: Spine2
     400134: //RootNode
-    7400000: mixamo.com
+    7400000: FocusWalkForward
     9500000: //RootNode
   externalObjects: {}
   materials:
@@ -171,12 +171,12 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: FocusWalkForward
       takeName: mixamo.com
       firstFrame: 0
       lastFrame: 36
       wrapMode: 0
-      orientationOffsetY: 0
+      orientationOffsetY: -55
       level: 0
       cycleOffset: 0
       loop: 0

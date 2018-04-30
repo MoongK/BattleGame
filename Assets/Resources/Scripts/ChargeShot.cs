@@ -31,7 +31,7 @@ public class ChargeShot : MonoBehaviour {
             myIm.fillAmount = 0f;
 
         if (myIm.fillAmount == 1f)
-            crosshairIm.color = /*Color.Lerp(crossOrigin, Color.red, 1f);*/ Color.red;
+            crosshairIm.color = Color.red;
         else
             crosshairIm.color = crossOrigin;
     }

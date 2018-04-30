@@ -77,7 +77,6 @@ public class BeltStatus : MonoBehaviour {
         else if (Shooter.transform.childCount == 0 && Grab.transform.childCount == 0)
             handlingAr = 0;
 
-        //havingAr = transform.childCount + handlingAr; // handAr == belt + grab
         havingAr = transform.childCount + Grab.transform.childCount + Shooter.transform.childCount;
         needAr = maxArrow - havingAr;
 

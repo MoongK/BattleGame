@@ -31,7 +31,6 @@ public class ChangeMode : MonoBehaviour {
                 Target = hit.collider.transform.root.gameObject;
                 TargetingPos = Target.transform.GetChild(0).Find("Spine").Find("Spine1").gameObject;
                 focusingPos = Target.transform.position; // targeting position
-                print("(ChangeMode) : Target name : " + Target.name);
             }
             else
             {

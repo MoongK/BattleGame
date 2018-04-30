@@ -41,7 +41,6 @@ public class GrabControll : MonoBehaviour {
         {
             if (!BeltStatus.reloading)
             {
-                print("(GrabControll) : Can't grab Arrow more than one");
                 transform.GetChild(transform.childCount - 1).SetParent(GameObject.Find("BowBelt").transform);
             }
         }

@@ -7,6 +7,6 @@ public class AlreadyShootChange : MonoBehaviour {
     void ChangeStat()
     {
         Shooter.AlreadyShoot = false;
-        print("(AlreadyShootChange) : Chaged!");
+        print("(AlreadyShootChange) : Changed! : I'm ready To Shoot!");
     }
 }
